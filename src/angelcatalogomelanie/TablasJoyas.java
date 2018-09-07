@@ -37,7 +37,7 @@ ResultSetMetaData rsMt;
         initComponents();
          setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
          setLocationRelativeTo(null);
-        //mostrar();
+        mostrarJoyas();
     }
  
     public void imprimir()
@@ -53,23 +53,23 @@ ResultSetMetaData rsMt;
        Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);       
      }
  }
-  /*private void  mostrar()
+  private void  mostrarJoyas()
    {
-     DefaultTableModel modelo = new DefaultTableModel();               
-        ResultSet rs = Conectar.getModel("select * from joyas;");
-        modelo.setColumnIdentifiers(new Object[]{"cantidad", "codigo","descripcion","precio","subtotal","total"});
+     DefaultTableModel model = new DefaultTableModel();               
+        ResultSet rs = Conectar.getTabla("select * from joyas");
+        model.setColumnIdentifiers(new Object[]{"cantidad", "codigo","descripcion","precio","subtotal","total"});
         try {
             while (rs.next()) {
                 // añade los resultado a al modelo de tabla
-                modelo.addRow(new Object[]{rs.getString("nombres"), rs.getString("apellidos")});
+                model.addRow(new Object[]{rs.getString("cantidad"), rs.getString("codigo"),rs.getString("descripcion"),rs.getString("precio"),rs.getString("subtotal"),rs.getString("total")});
             }            
             // asigna el modelo a la tabla
-            seleccionartabla.setModel(model);            
+            tablaJoyas.setModel(model);            
         } catch (Exception e) {
             System.out.println(e);
         }  
    }
-  */
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,6 +87,8 @@ ResultSetMetaData rsMt;
         jButton1 = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaJoyas = new javax.swing.JTable();
 
         setUndecorated(true);
 
@@ -108,11 +110,7 @@ ResultSetMetaData rsMt;
         ));
         jScrollPane1.setViewportView(seleccionartabla);
         if (seleccionartabla.getColumnModel().getColumnCount() > 0) {
-            seleccionartabla.getColumnModel().getColumn(0).setResizable(false);
-            seleccionartabla.getColumnModel().getColumn(1).setResizable(false);
-            seleccionartabla.getColumnModel().getColumn(2).setResizable(false);
             seleccionartabla.getColumnModel().getColumn(3).setResizable(false);
-            seleccionartabla.getColumnModel().getColumn(4).setResizable(false);
             seleccionartabla.getColumnModel().getColumn(5).setResizable(false);
         }
 
@@ -151,6 +149,21 @@ ResultSetMetaData rsMt;
             }
         });
 
+        tablaJoyas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "cantidad", "codigo", "descripcion", "precio", "subtotal", "total"
+            }
+        ));
+        jScrollPane2.setViewportView(tablaJoyas);
+        if (tablaJoyas.getColumnModel().getColumnCount() > 0) {
+            tablaJoyas.getColumnModel().getColumn(3).setResizable(false);
+            tablaJoyas.getColumnModel().getColumn(5).setResizable(false);
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -158,10 +171,10 @@ ResultSetMetaData rsMt;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAtras)
-                        .addGap(117, 117, 117)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRegistrar)
                         .addGap(18, 18, 18)
                         .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -170,8 +183,8 @@ ResultSetMetaData rsMt;
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
-                        .addComponent(btnSalirte)
-                        .addGap(0, 3, Short.MAX_VALUE)))
+                        .addComponent(btnSalirte))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -180,14 +193,16 @@ ResultSetMetaData rsMt;
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSalirte)
-                    .addComponent(btnRegistrar)
                     .addComponent(btnAtras)
-                    .addComponent(jButton1)
+                    .addComponent(btnRegistrar)
                     .addComponent(btnModificar)
+                    .addComponent(btnSalirte)
+                    .addComponent(jButton1)
                     .addComponent(btnEliminar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
         );
 
         pack();
@@ -201,23 +216,7 @@ System.exit(0);        // TODO add your handling code here:
  
  Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
-  String sql="",codigo="",descripcion="";
-  int cantidad=0;
-  float precio=0,subtotal=0,total=0;
-  sql=("INSERT INTO joyas(cantidad,codigo,descripcion,precio,subtotal,total) VALUES (?,?,?,?,?,?)");
-    try {
-        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
-     pst.setInt(1, cantidad);
-     pst.setString(2,codigo);
-     pst.setString(3,descripcion);
-     pst.setFloat(4,precio);
-     pst.setFloat(5,subtotal);
-     pst.setFloat(6,total);
-     pst.executeUpdate();
-    }
-    catch (SQLException ex) {
-    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-    } 
+  
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
@@ -286,6 +285,8 @@ imprimir();
     private javax.swing.JButton btnSalirte;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable seleccionartabla;
+    private javax.swing.JTable tablaJoyas;
     // End of variables declaration//GEN-END:variables
 }

@@ -30,5 +30,20 @@ public class Conectar {
             }
             return conect;
         }
+    public static ResultSet getTabla(String Consulta)
+    {
+        Conectar cc=new Conectar();
+ com.mysql.jdbc.Connection cn= (com.mysql.jdbc.Connection) cc.conexion();
+       
+        java.sql.Statement st;
+        ResultSet datos=null;
+        try
+        {
+            st=cn.createStatement();
+            datos=st.executeQuery(Consulta);            
+        }
+        catch(Exception e){ System.out.print(e.toString());}
+        return datos;
+    } 
      
 }

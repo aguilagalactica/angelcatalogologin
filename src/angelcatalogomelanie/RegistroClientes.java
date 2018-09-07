@@ -6,11 +6,13 @@
 package angelcatalogomelanie;
 
 import com.mysql.jdbc.*;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.sql.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -33,7 +35,7 @@ private javax.swing.JTextField nombre;
          setLocationRelativeTo(null);
          limpiar();
          bloquear();
-  //this.setVisible(false);
+ mostrarClientes();
     }
 
 public void limpiar()
@@ -54,6 +56,22 @@ public void desbloquear()
    btnSiguiente.setEnabled(true);
   
 }
+private void  mostrarClientes()
+   {
+     DefaultTableModel model = new DefaultTableModel();               
+        ResultSet rs = Conectar.getTabla("select * from clientes");
+        model.setColumnIdentifiers(new Object[]{"nombre", "cantidad"});
+        try {
+            while (rs.next()) {
+                // añade los resultado a al modelo de tabla
+                model.addRow(new Object[]{rs.getString("nombre"), rs.getString("cantidad")});
+            }            
+            // asigna el modelo a la tabla
+            tblClientes.setModel(model);            
+        } catch (Exception e) {
+            System.out.println(e);
+        }  
+   }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,6 +90,8 @@ public void desbloquear()
         txtNombre = new javax.swing.JTextField();
         jspArticulos = new javax.swing.JSpinner();
         btnNuevo = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblClientes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -82,7 +102,7 @@ public void desbloquear()
         getContentPane().add(lblPresentacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 120, -1));
 
         lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
-        getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 250, 150));
+        getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 150));
 
         btnSiguiente.setText("SIGUIENTE");
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
@@ -122,6 +142,18 @@ public void desbloquear()
         });
         getContentPane().add(btnNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
 
+        tblClientes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "NOMBRE", "CANTIDAD"
+            }
+        ));
+        jScrollPane1.setViewportView(tblClientes);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 280, 290));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -130,8 +162,9 @@ System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-TablasJoyas tj = new TablasJoyas();
-tj.setVisible(true);  
+
+TablasJoyas tj=new TablasJoyas();
+tj.setVisible(true);
 this.show(false);
 String sql="";
 String n,sp;
@@ -200,11 +233,13 @@ txtNombre.transferFocus();
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnSiguiente;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jspArticulos;
     private javax.swing.JLabel lblCantidad;
     private javax.swing.JLabel lblImg;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPresentacion;
+    private javax.swing.JTable tblClientes;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
