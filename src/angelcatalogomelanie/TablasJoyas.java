@@ -8,13 +8,16 @@ package angelcatalogomelanie;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
+import java.awt.print.PrinterException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -24,7 +27,8 @@ import javax.swing.table.DefaultTableModel;
 public class TablasJoyas extends javax.swing.JFrame {
 DefaultTableModel model;
 ResultSetMetaData rsMt;
-String sql="",codigo="",descripcion="",cantidad="",precio="",subtotal="",total="";
+
+
 
     /**
      * Creates new form TablasJoyas
@@ -33,13 +37,39 @@ String sql="",codigo="",descripcion="",cantidad="",precio="",subtotal="",total="
         initComponents();
          setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
          setLocationRelativeTo(null);
-        
+        //mostrar();
     }
  
     public void imprimir()
  {
-     
+     try
+     {
+         MessageFormat headerFormat= new MessageFormat("MelanieCatalogo");
+         MessageFormat footerFormat= new MessageFormat("MelanieCatalogo");
+         seleccionartabla.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+     }
+     catch(PrinterException ex)
+     {
+       Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);       
+     }
  }
+  /*private void  mostrar()
+   {
+     DefaultTableModel modelo = new DefaultTableModel();               
+        ResultSet rs = Conectar.getModel("select * from joyas;");
+        modelo.setColumnIdentifiers(new Object[]{"cantidad", "codigo","descripcion","precio","subtotal","total"});
+        try {
+            while (rs.next()) {
+                // añade los resultado a al modelo de tabla
+                modelo.addRow(new Object[]{rs.getString("nombres"), rs.getString("apellidos")});
+            }            
+            // asigna el modelo a la tabla
+            seleccionartabla.setModel(model);            
+        } catch (Exception e) {
+            System.out.println(e);
+        }  
+   }
+  */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -76,9 +106,7 @@ String sql="",codigo="",descripcion="",cantidad="",precio="",subtotal="",total="
                 "cantidad", "codigo", "descripcion", "precio", "subtotal", "total"
             }
         ));
-        seleccionartabla.setColumnSelectionAllowed(true);
         jScrollPane1.setViewportView(seleccionartabla);
-        seleccionartabla.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (seleccionartabla.getColumnModel().getColumnCount() > 0) {
             seleccionartabla.getColumnModel().getColumn(0).setResizable(false);
             seleccionartabla.getColumnModel().getColumn(1).setResizable(false);
@@ -130,22 +158,21 @@ String sql="",codigo="",descripcion="",cantidad="",precio="",subtotal="",total="
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnAtras)
-                        .addGap(36, 36, 36)
+                        .addGap(117, 117, 117)
                         .addComponent(btnRegistrar)
-                        .addGap(34, 34, 34)
-                        .addComponent(btnModificar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnEliminar)
-                        .addGap(30, 30, 30)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton1)
-                        .addGap(47, 47, 47)
+                        .addGap(18, 18, 18)
                         .addComponent(btnSalirte)
-                        .addGap(19, 19, 19))))
+                        .addGap(0, 3, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,10 +198,26 @@ System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_btnSalirteActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+ 
  Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
- 
-  
+  String sql="",codigo="",descripcion="";
+  int cantidad=0;
+  float precio=0,subtotal=0,total=0;
+  sql=("INSERT INTO joyas(cantidad,codigo,descripcion,precio,subtotal,total) VALUES (?,?,?,?,?,?)");
+    try {
+        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
+     pst.setInt(1, cantidad);
+     pst.setString(2,codigo);
+     pst.setString(3,descripcion);
+     pst.setFloat(4,precio);
+     pst.setFloat(5,subtotal);
+     pst.setFloat(6,total);
+     pst.executeUpdate();
+    }
+    catch (SQLException ex) {
+    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+    } 
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
