@@ -8,11 +8,13 @@ package angelcatalogomelanie;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,9 +24,8 @@ import javax.swing.table.DefaultTableModel;
 public class TablasJoyas extends javax.swing.JFrame {
 DefaultTableModel model;
 ResultSetMetaData rsMt;
-Statement st = null;
-ResultSet rs = null;
-int col,action;
+String sql="",codigo="",descripcion="",cantidad="",precio="",subtotal="",total="";
+
     /**
      * Creates new form TablasJoyas
      */
@@ -34,7 +35,8 @@ int col,action;
          setLocationRelativeTo(null);
         
     }
- public void imprimir()
+ 
+    public void imprimir()
  {
      
  }
@@ -53,8 +55,8 @@ int col,action;
         btnRegistrar = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setUndecorated(true);
 
@@ -68,15 +70,15 @@ int col,action;
         seleccionartabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
                 {null, null, null, null, null, null}
             },
             new String [] {
                 "cantidad", "codigo", "descripcion", "precio", "subtotal", "total"
             }
         ));
+        seleccionartabla.setColumnSelectionAllowed(true);
         jScrollPane1.setViewportView(seleccionartabla);
+        seleccionartabla.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (seleccionartabla.getColumnModel().getColumnCount() > 0) {
             seleccionartabla.getColumnModel().getColumn(0).setResizable(false);
             seleccionartabla.getColumnModel().getColumn(1).setResizable(false);
@@ -107,9 +109,19 @@ int col,action;
             }
         });
 
-        jButton2.setText("jButton2");
+        btnModificar.setText("MODIFICAR");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("jButton3");
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -126,9 +138,9 @@ int col,action;
                         .addGap(36, 36, 36)
                         .addComponent(btnRegistrar)
                         .addGap(34, 34, 34)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(btnModificar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addComponent(btnEliminar)
                         .addGap(30, 30, 30)
                         .addComponent(jButton1)
                         .addGap(47, 47, 47)
@@ -146,8 +158,8 @@ int col,action;
                     .addComponent(btnRegistrar)
                     .addComponent(btnAtras)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnModificar)
+                    .addComponent(btnEliminar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -159,29 +171,10 @@ System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_btnSalirteActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-
-String sql="";
-int cantidad=0;
-String codigo="",descripcion="";
-float precio=0,subtotal=0,total=0;
- 
-Conectar cc=new Conectar();
+ Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
  
-  sql="INSERT INTO joyas(cantidad,codigo,descripcion,precio,subtotal,total) VALUES (?,?,?,?,?,?)";
-    try {
-        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
-     pst.setInt(1,cantidad);
-     pst.setString(2,codigo);
-  pst.setString(3,descripcion);
-  pst.setFloat(4,precio);
-  pst.setFloat(5,subtotal);
-  pst.setFloat(6,total);
-     pst.executeUpdate();
-    }
-    catch (SQLException ex) {
-    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-    }// TODO add your handling code here:
+  
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
@@ -193,6 +186,19 @@ this.show(false);
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 imprimir();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+ Conectar cc=new Conectar();
+ Connection cn= (Connection) cc.conexion();
+     
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+     Conectar cc=new Conectar();
+ Connection cn= (Connection) cc.conexion();
+    
+ 
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,11 +237,11 @@ imprimir();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnSalirte;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable seleccionartabla;
     // End of variables declaration//GEN-END:variables
