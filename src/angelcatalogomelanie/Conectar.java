@@ -6,8 +6,11 @@ import javax.swing.*;
  *
  * @author Charlie
  */
+
+
 public class Conectar {
     Connection conect = null;
+ 
     public Connection conexion()
         {
             try {
@@ -30,6 +33,7 @@ public class Conectar {
             }
             return conect;
         }
+    
     public static ResultSet getTabla(String Consulta)
     {
         Conectar cc=new Conectar();

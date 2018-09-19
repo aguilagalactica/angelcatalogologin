@@ -23,7 +23,7 @@ private javax.swing.JButton next;
 private javax.swing.JButton salir;
 private javax.swing.JTextField nombre;
 
-  
+  String n,sp,sql="";
 
 
     /**
@@ -68,7 +68,7 @@ private void  mostrarClientes()
             }            
             // asigna el modelo a la tabla
             tblClientes.setModel(model);            
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e);
         }  
    }
@@ -92,6 +92,7 @@ private void  mostrarClientes()
         btnNuevo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClientes = new javax.swing.JTable();
+        btnGuardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -154,6 +155,14 @@ private void  mostrarClientes()
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 280, 290));
 
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -166,22 +175,8 @@ System.exit(0);
 TablasJoyas tj=new TablasJoyas();
 tj.setVisible(true);
 this.show(false);
-String sql="";
-String n,sp;
- Conectar cc=new Conectar();
- Connection cn= (Connection) cc.conexion();
-  n=txtNombre.getText();
-  sp=jspArticulos.getValue().toString();
-  sql="INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
-    try {
-        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
-     pst.setString(1,n);
-     pst.setString(2,sp);
-     pst.executeUpdate();
-    }
-    catch (SQLException ex) {
-    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-    }
+
+ 
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
@@ -193,6 +188,24 @@ String n,sp;
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
 txtNombre.transferFocus();       
     }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+     Conectar cc=new Conectar();
+ Connection cn= (Connection) cc.conexion();
+  n=txtNombre.getText();
+  sp=jspArticulos.getValue().toString();
+  sql="INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
+    try {
+        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
+     pst.setString(1,n);
+    pst.setString(2, sp);
+     pst.executeUpdate();
+    }
+    catch (SQLException ex) {
+    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    mostrarClientes();// TODO add your handling code here:
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,6 +243,7 @@ txtNombre.transferFocus();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnSiguiente;

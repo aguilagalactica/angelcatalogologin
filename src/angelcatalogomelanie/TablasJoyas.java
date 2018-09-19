@@ -30,8 +30,9 @@ import javax.swing.table.DefaultTableModel;
 public class TablasJoyas extends javax.swing.JFrame {
 DefaultTableModel model;
 ResultSetMetaData rsMt;
-
-
+float n1,n2,n3,n4;
+String cantidad,descripcion,codigo,precio,total,sql="";
+ protected Statement st = null;
 
     /**
      * Creates new form TablasJoyas
@@ -49,7 +50,7 @@ ResultSetMetaData rsMt;
      {
          MessageFormat headerFormat= new MessageFormat("MelanieCatalogo");
          MessageFormat footerFormat= new MessageFormat("MelanieCatalogo");
-         seleccionartabla.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+         tablaJoyas.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
      }
      catch(PrinterException ex)
      {
@@ -60,11 +61,11 @@ ResultSetMetaData rsMt;
    {
      DefaultTableModel model = new DefaultTableModel();               
         ResultSet rs = Conectar.getTabla("select * from joyas");
-        model.setColumnIdentifiers(new Object[]{"cantidad", "codigo","descripcion","precio","subtotal","total"});
+        model.setColumnIdentifiers(new Object[]{"cantidad", "descripcion","codigo","precio","total"});
         try {
             while (rs.next()) {
                 // añade los resultado a al modelo de tabla
-                model.addRow(new Object[]{rs.getString("cantidad"), rs.getString("codigo"),rs.getString("descripcion"),rs.getString("precio"),rs.getString("subtotal"),rs.getString("total")});
+                model.addRow(new Object[]{rs.getString("cantidad"), rs.getString("descripcion"),rs.getString("codigo"),rs.getString("precio"),rs.getString("total")});
             }            
             // asigna el modelo a la tabla
             tablaJoyas.setModel(model);            
@@ -72,7 +73,16 @@ ResultSetMetaData rsMt;
             System.out.println(e);
         }  
    }
-  
+  public void resultado()
+  {
+      n1=Float.parseFloat(cantidad);
+      n2=Float.parseFloat(precio);
+      n3=Float.parseFloat(total);
+     n3=n1*n2;
+     total = Float.toString(n3); 
+    lblTotal.setText(total);
+  }
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -83,8 +93,6 @@ ResultSetMetaData rsMt;
     private void initComponents() {
 
         btnSalirte = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        seleccionartabla = new javax.swing.JTable();
         btnRegistrar = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -92,6 +100,16 @@ ResultSetMetaData rsMt;
         btnEliminar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaJoyas = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txtDescripcion = new javax.swing.JTextField();
+        txtCantidad = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
+        txtPrecio = new javax.swing.JTextField();
+        lblTotal = new javax.swing.JLabel();
 
         setUndecorated(true);
 
@@ -101,21 +119,6 @@ ResultSetMetaData rsMt;
                 btnSalirteActionPerformed(evt);
             }
         });
-
-        seleccionartabla.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "cantidad", "codigo", "descripcion", "precio", "subtotal", "total"
-            }
-        ));
-        jScrollPane1.setViewportView(seleccionartabla);
-        if (seleccionartabla.getColumnModel().getColumnCount() > 0) {
-            seleccionartabla.getColumnModel().getColumn(3).setResizable(false);
-            seleccionartabla.getColumnModel().getColumn(5).setResizable(false);
-        }
 
         btnRegistrar.setText("REGISTRAR");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -154,30 +157,65 @@ ResultSetMetaData rsMt;
 
         tablaJoyas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
-                "cantidad", "codigo", "descripcion", "precio", "subtotal", "total"
+                "cantidad", "descripcion", "codigo", "precio", "total"
             }
         ));
+        tablaJoyas.setColumnSelectionAllowed(false);
+        tablaJoyas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tablaJoyasMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tablaJoyas);
-        if (tablaJoyas.getColumnModel().getColumnCount() > 0) {
-            tablaJoyas.getColumnModel().getColumn(3).setResizable(false);
-            tablaJoyas.getColumnModel().getColumn(5).setResizable(false);
-        }
+
+        jLabel1.setText("Cantidad:");
+
+        jLabel2.setText("Descripción:");
+
+        jLabel3.setText("Código");
+
+        jLabel4.setText("Precio:");
+
+        jLabel5.setText("Total:");
+
+        txtDescripcion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDescripcionActionPerformed(evt);
+            }
+        });
+
+        txtCantidad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCantidadActionPerformed(evt);
+            }
+        });
+
+        txtCodigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoActionPerformed(evt);
+            }
+        });
+
+        txtPrecio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrecioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAtras)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 227, Short.MAX_VALUE)
                         .addComponent(btnRegistrar)
                         .addGap(18, 18, 18)
                         .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -187,17 +225,52 @@ ResultSetMetaData rsMt;
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
                         .addComponent(btnSalirte))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel4)))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                                    .addComponent(txtCodigo)
+                                    .addComponent(txtCantidad)
+                                    .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAtras)
                     .addComponent(btnRegistrar)
@@ -216,10 +289,35 @@ System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_btnSalirteActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
- 
- Conectar cc=new Conectar();
+  Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
-  
+ 
+ 
+   cantidad=txtCantidad.getText();
+  descripcion=txtDescripcion.getText();
+   codigo=txtCodigo.getText();
+   precio=txtPrecio.getText();
+
+  total = Float.toString(n3); 
+    lblTotal.setText(total); 
+     resultado();
+  sql="INSERT INTO joyas(cantidad,descripcion,codigo,precio,total) VALUES (?,?,?,?,?)";
+    try {
+        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
+     pst.setString(1,cantidad);
+    pst.setString(2,descripcion);
+    pst.setString(3,codigo);
+    pst.setString(4,precio);
+    pst.setString(5,total);
+     pst.executeUpdate();
+    }
+    catch (SQLException ex) 
+    {
+    Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null,ex);
+      
+    }
+    resultado();  //Creo que va aquí, para que calcule el total antes de guardarlo en la bd
+    mostrarJoyas();
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
@@ -235,15 +333,55 @@ imprimir();
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
  Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
-     
+   
+ /*try {
+        PreparedStatement pst = cn.prepareStatement("UPDATE joyas SET cantidad='"+txtCantidad.getText()+"'"
+                + ",descripcion='"+txtDescripcion.getText()+"', codigo='"+txtCodigo.getText()+"' ,descripcion='"+txtDescripcion.getText()+"',codigo='"+txtCodigo.getText() +"',precio='"+txtPrecio+"', WHERE cantidad='"+txtCantidad.getText()+"'"
+                + ",descripcion='"+txtDescripcion.getText()+"', codigo='"+txtCodigo.getText()+"' ,descripcion='"+txtDescripcion.getText()+"',codigo='"+txtCodigo.getText() +"',precio='"+txtPrecio+"'" );
+        pst.executeUpdate();
+        mostrarJoyas();
+    } catch (SQLException ex) 
+    {
+    Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null,ex);
+      
+    }*/
+ /*
+ int i = tablaJoyas.getSelectedRow();
+ if  (i>=0) {
+               
+            } else
+ {
+  JOptionPane.showMessageDialog(this, "FILA NO SELECCIONADA");
+ }*/
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
      Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
-    
+ 
  
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
+txtCantidad.requestFocus();        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCantidadActionPerformed
+
+    private void txtDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescripcionActionPerformed
+txtDescripcion.transferFocus();         // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescripcionActionPerformed
+
+    private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
+txtCodigo.transferFocus();         // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoActionPerformed
+
+    private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
+txtPrecio.transferFocus();        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrecioActionPerformed
+
+    private void tablaJoyasMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaJoyasMouseReleased
+       
+        
+    }//GEN-LAST:event_tablaJoyasMouseReleased
 
     /**
      * @param args the command line arguments
@@ -287,9 +425,17 @@ imprimir();
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnSalirte;
     private javax.swing.JButton jButton1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable seleccionartabla;
+    private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tablaJoyas;
+    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtDescripcion;
+    private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }
