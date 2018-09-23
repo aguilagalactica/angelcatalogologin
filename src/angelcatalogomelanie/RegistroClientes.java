@@ -14,7 +14,9 @@ import javax.swing.ImageIcon;
 import javax.sql.*;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -26,28 +28,30 @@ public class RegistroClientes extends javax.swing.JFrame {
     private javax.swing.JButton salir;
     private javax.swing.JTextField nombre;
 
-    String n, sp, sql = "";
+    String n, sp, sql = "",filtro;
+    private TableRowSorter trsfiltro;
     private Object acciones;
 
     /**
      * Creates new form RegistroClientes
      */
-    public RegistroClientes() {
+    public RegistroClientes() 
+    {
         initComponents();
         setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
         setLocationRelativeTo(null);
+       conectarBDclientes();
         limpiar();
         bloquear();
-
         mostrarClientes();
     }
-
-    public void limpiar() {
+public void limpiar() 
+{
         txtNombre.setText("");
         txtCantidad.setText("");
-    }
-
-    public void bloquear() {
+}
+   public void bloquear() 
+   {
         txtNombre.setEnabled(false);
         txtCantidad.setEnabled(false);
         jspArticulos.setEnabled(false);
@@ -55,10 +59,9 @@ public class RegistroClientes extends javax.swing.JFrame {
         btnGuardar.setEnabled(false);
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
-
-    }
-
-    public void desbloquear() {
+   }
+   public void desbloquear() 
+   {
         txtNombre.setEnabled(true);
         txtCantidad.setEnabled(true);
         jspArticulos.setEnabled(true);
@@ -68,8 +71,8 @@ public class RegistroClientes extends javax.swing.JFrame {
         btnEliminar.setEnabled(true);
 
     }
-
-    private void mostrarClientes() {
+    private void mostrarClientes() 
+    {
         DefaultTableModel model = new DefaultTableModel();
         ResultSet rs = Conectar.getTabla("select * from clientes");
         model.setColumnIdentifiers(new Object[]{"nombre", "cantidad"});
@@ -84,7 +87,136 @@ public class RegistroClientes extends javax.swing.JFrame {
             System.out.println(e);
         }
     }
+public void conectarBDclientes()
+     {
+         Conectar cc = new Conectar();
+       java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+     cc.conexion();
+     cn=cc.conexion();
+     }
 
+public void GuardarDatos()
+{     
+    n = txtNombre.getText();
+        sp = jspArticulos.getValue().toString();
+
+        sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
+        try {
+             Conectar cc = new Conectar();
+     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+           if (tblClientes.equals(null) )
+{
+    JOptionPane.showMessageDialog(null, " FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+ 
+}
+else
+{
+             pst.setString(1, n);
+            pst.setString(2, sp);
+            pst.executeUpdate();
+            mostrarClientes();
+            JOptionPane.showMessageDialog(null, "DATOS GUARDADOS CORRECTAMENTE");
+            
+}     
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
+public void SiguienteTabla()
+{
+    if (tblClientes.getRowCount() == 0 )
+{
+    JOptionPane.showMessageDialog(null, "CAMPOS VACIOS, FAVOR DE INGRESAR SU NOMBRE Y CANTIDAD DE JOYAS" , "", JOptionPane.ERROR_MESSAGE);
+}
+else
+{
+   TablasJoyas tj = new TablasJoyas();
+        tj.setVisible(true);
+        this.show(false);
+   
+}
+}
+public void NuevosDatos()
+{
+     btnGuardar.setEnabled(false);
+     btnModificar.setEnabled(false);
+     btnEliminar.setEnabled(false);
+        jspArticulos.setEnabled(true);
+        txtNombre.setEnabled(true);
+        limpiar();
+        txtNombre.requestFocus();
+}
+public void MostrarDatosTablas()
+{
+   DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
+        txtNombre.setText(model.getValueAt(tblClientes.getSelectedRow(), 0) + "");
+        txtCantidad.setText(model.getValueAt(tblClientes.getSelectedRow(), 1) + "");
+        txtCantidad.setEnabled(true);
+        txtNombre.setEnabled(true); 
+}
+public void EliminarDatosTablasClientes()
+{
+    int fila=tblClientes.getSelectedRow();
+   String dao=(String)tblClientes.getValueAt(fila,0);
+        try
+        {
+             if (tblClientes.getRowCount()!=0)
+{ 
+    Conectar cc = new Conectar();
+     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+    java.sql.PreparedStatement pst = cn.prepareStatement(sql="DELETE from clientes where nombre='"+dao+"'");
+pst.executeUpdate();
+ 
+ JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE"); 
+   
+}
+else
+{
+   JOptionPane.showMessageDialog(null, "CAMPOS VACIOS" , "NO HAY REGISTROS QUE ELIMINAR", JOptionPane.ERROR_MESSAGE);
+   
+}
+           
+        }
+         catch (SQLException ex) 
+        {
+            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       mostrarClientes();
+}
+private void ModificarDatosTablasClientes() 
+{
+    try
+{
+     if (tblClientes.equals(null) )
+{ 
+    JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+
+}
+  else
+{
+    Conectar cc = new Conectar();
+     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE clientes set nombre='"+txtNombre.getText()+"', cantidad='"+txtCantidad.getText()+"' where nombre='"+txtNombre.getText()+"'");
+pst.executeUpdate();
+   
+ JOptionPane.showMessageDialog(null, "DATOS MODIFICADOS CORRECTAMENTE"); 
+}      
+}
+catch  (SQLException ex) 
+        {
+          Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);   
+        }
+    mostrarClientes();
+}
+
+public void MostrarClientesSeleccionados()
+{
+    filtro = txtNombre.getText();
+trsfiltro.setRowFilter(RowFilter.regexFilter(txtNombre.getText(), 0));
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,6 +242,9 @@ public class RegistroClientes extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         txtCantidad = new javax.swing.JTextField();
         lblPresentacion1 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        btnSesion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 204));
@@ -208,6 +343,29 @@ public class RegistroClientes extends javax.swing.JFrame {
         lblPresentacion1.setText("CLIENTES");
         getContentPane().add(lblPresentacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 11, 120, -1));
 
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
+        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 340, 270, -1));
+
+        btnBuscar.setText("BUSCAR");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
+
+        btnSesion.setText("SESION");
+        btnSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSesionActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 340, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -216,28 +374,12 @@ public class RegistroClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-if (tblClientes.getRowCount() == 0 )
-{
-    JOptionPane.showMessageDialog(null, "CAMPOS VACIOS, FAVOR DE INGRESAR SU NOMBRE Y CANTIDAD DE JOYAS" , "", JOptionPane.ERROR_MESSAGE);
-}
-else
-{
-   TablasJoyas tj = new TablasJoyas();
-        tj.setVisible(true);
-        this.show(false);
-   
-}
-       
-
-
+       SiguienteTabla();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        desbloquear();
-        txtCantidad.setEnabled(false);
-        limpiar();
-        txtNombre.requestFocus();
-
+       NuevosDatos();
+       
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
@@ -245,106 +387,37 @@ else
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Conectar cc = new Conectar();
-        Connection cn = (Connection) cc.conexion();
-        n = txtNombre.getText();
-        sp = jspArticulos.getValue().toString();
-
-        sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
-        try {
-           if (tblClientes.equals(null) )
-{
-    JOptionPane.showMessageDialog(null, " FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
- 
-}
-else
-{
-     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1, n);
-            pst.setString(2, sp);
-            pst.executeUpdate();
-            mostrarClientes();
-            JOptionPane.showMessageDialog(null, "DATOS GUARDADOS CORRECTAMENTE");
-            
-}
-            
-        } 
-        catch (SQLException ex) 
-        {
-            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-
+       GuardarDatos();
+      
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void tblClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClientesMouseClicked
-        DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
-        txtNombre.setText(model.getValueAt(tblClientes.getSelectedRow(), 0) + "");
-        txtCantidad.setText(model.getValueAt(tblClientes.getSelectedRow(), 1) + "");
-        txtCantidad.setEnabled(true);
-        txtNombre.setEnabled(true);
-
-
+MostrarDatosTablas();
     }//GEN-LAST:event_tblClientesMouseClicked
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        Conectar cc = new Conectar();
-        Connection cn = (Connection) cc.conexion();
-  int fila=tblClientes.getSelectedRow();
-   String dao=(String)tblClientes.getValueAt(fila,0);
-        try
-        {
-             if (tblClientes.getRowCount()!=0)
-{ 
-    java.sql.PreparedStatement pst = cn.prepareStatement(sql="DELETE from clientes where nombre='"+dao+"'");
-pst.executeUpdate();
- 
- JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE"); 
-   
-}
-else
-{
-   JOptionPane.showMessageDialog(null, "CAMPOS VACIOS" , "NO HAY REGISTROS QUE ELIMINAR", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-           
-        }
-         catch (SQLException ex) 
-        {
-            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       mostrarClientes();
-
-
+       EliminarDatosTablasClientes();
+      
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        Conectar cc = new Conectar();
-        Connection cn = (Connection) cc.conexion();
-try
-{
-     if (tblClientes.equals(null) )
-{
-}
-  else
-{
-   JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
-    //return;
-}
+       ModificarDatosTablasClientes();
      
-     java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE clientes set nombre='"+txtNombre.getText()+"', cantidad='"+txtCantidad.getText()+"' where nombre='"+txtNombre.getText()+"'");
-pst.executeUpdate();
-   
- JOptionPane.showMessageDialog(null, "DATOS MODIFICADOS CORRECTAMENTE"); 
-    
-}
-catch  (SQLException ex) 
-        {
-          Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);   
-        }
-    mostrarClientes(); 
-
     }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+      // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+   MostrarClientesSeleccionados();       // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSesionActionPerformed
+ IniciarSesion is= new IniciarSesion();
+ is.setVisible(true);
+ this.show(false);      
+    }//GEN-LAST:event_btnSesionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -382,11 +455,13 @@ catch  (SQLException ex)
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnSesion;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jspArticulos;
@@ -396,7 +471,12 @@ catch  (SQLException ex)
     private javax.swing.JLabel lblPresentacion;
     private javax.swing.JLabel lblPresentacion1;
     private javax.swing.JTable tblClientes;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
+
+   
+
+    
 }

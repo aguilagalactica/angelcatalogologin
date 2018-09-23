@@ -367,23 +367,23 @@ System.exit(0);        // TODO add your handling code here:
   ///////////////////////////////INICIO DE LA SENTENCIA SQL, CON TRY AND CATCH   
   sql="INSERT INTO joyas(cantidad,descripcion,codigo,precio,total) VALUES (?,?,?,?,?)";
     try {
-         if (tablaJoyas.getRowCount() == 0 )
-{
+         if (tablaJoyas.equals(null))
+{ 
+    JOptionPane.showMessageDialog(tablaJoyas, "FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+
 }
 else
 {
-   JOptionPane.showMessageDialog(tablaJoyas, "FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
-    
-}
-        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
+     java.sql.PreparedStatement pst= cn.prepareStatement(sql);
      pst.setString(1,cantidad);
     pst.setString(2,descripcion);
     pst.setString(3,codigo);
     pst.setString(4,precio);
-    pst.setString(5,"$"+lblTotal);
+    pst.setString(5,"$"+"  "+total);
      pst.executeUpdate();
      JOptionPane.showMessageDialog(null, "REGISTROS GUARDADOS ");
-    }
+    }   
+}
     catch (SQLException ex) 
     {
     Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null,ex);
@@ -411,18 +411,18 @@ imprimir();
 {
          if (tablaJoyas.equals(null) )
 {
+    JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
 }
   else
 {
-   JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
-    //return;
-}
-    java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE joyas set cantidad='"+txtCantidad.getText()+"', descripcion='"+txtDescripcion.getText()+"' codigo='"+txtCodigo.getText()+"', precio='"+txtPrecio.getText()+"',  where cantidad='"+txtCantidad.getText()+"'");
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE joyas set cantidad='"+txtCantidad.getText()+"', descripcion='"+txtDescripcion.getText()+"' codigo='"+txtCodigo.getText()+"', precio='"+txtPrecio.getText()+"',  where cantidad='"+txtCantidad.getText()+"'");
 pst.executeUpdate();
   
  JOptionPane.showMessageDialog(null, "DATOS MODIFICADOS CORRECTAMENTE"); 
      resultado();
+} 
 }
+    
     catch (SQLException ex) {
     Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -432,8 +432,30 @@ mostrarJoyas();
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
      Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
- 
-      
+ int fila=tablaJoyas.getSelectedRow();
+   String deo=(String)tablaJoyas.getValueAt(fila,0);
+        try
+        {
+             if (tablaJoyas.getRowCount()!=0)
+{ 
+    java.sql.PreparedStatement pst = cn.prepareStatement(sql="DELETE from joyas where cantidad='"+deo+"'");
+pst.executeUpdate();
+
+ JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE"); 
+   
+}
+else
+{
+   JOptionPane.showMessageDialog(null, "CAMPOS VACIOS" , "NO HAY REGISTROS QUE ELIMINAR", JOptionPane.ERROR_MESSAGE);
+   
+}
+           
+   
+        } catch (SQLException ex) {
+        Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null, ex);
+    }
+mostrarJoyas();
+        
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed

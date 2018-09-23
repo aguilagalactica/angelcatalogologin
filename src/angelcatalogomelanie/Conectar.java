@@ -8,7 +8,8 @@ import javax.swing.*;
  */
 
 
-public class Conectar {
+public class Conectar 
+{
     Connection conect = null;
  
     public Connection conexion()
@@ -50,4 +51,5 @@ public class Conectar {
         return datos;
     } 
      
+    
 }
