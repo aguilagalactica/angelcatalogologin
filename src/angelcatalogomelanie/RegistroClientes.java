@@ -218,15 +218,16 @@ public class RegistroClientes extends javax.swing.JFrame {
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
 if (tblClientes.getRowCount() == 0 )
 {
+    JOptionPane.showMessageDialog(null, "CAMPOS VACIOS, FAVOR DE INGRESAR SU NOMBRE Y CANTIDAD DE JOYAS" , "", JOptionPane.ERROR_MESSAGE);
 }
 else
 {
-   JOptionPane.showMessageDialog(tblClientes, "CAMPOS VACIOS, FAVOR DE INGRESAR SU NOMBRE Y CANTIDAD DE JOYAS" , "", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-        TablasJoyas tj = new TablasJoyas();
+   TablasJoyas tj = new TablasJoyas();
         tj.setVisible(true);
         this.show(false);
+   
+}
+       
 
 
     }//GEN-LAST:event_btnSiguienteActionPerformed
@@ -251,24 +252,28 @@ else
 
         sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
         try {
-           if (tblClientes.getRowCount() == 0 )
+           if (tblClientes.equals(null) )
 {
+    JOptionPane.showMessageDialog(null, " FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+ 
 }
 else
 {
-   JOptionPane.showMessageDialog(tblClientes, "REGISTROS VACIOS, FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "", JOptionPane.ERROR_MESSAGE);
-    return;
-}
-            java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
             pst.setString(1, n);
             pst.setString(2, sp);
             pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "DATOS GUARDADOS");
+            mostrarClientes();
+            JOptionPane.showMessageDialog(null, "DATOS GUARDADOS CORRECTAMENTE");
+            
+}
+            
         } 
-        catch (SQLException ex) {
+        catch (SQLException ex) 
+        {
             Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mostrarClientes();
+        
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -285,28 +290,30 @@ else
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         Conectar cc = new Conectar();
         Connection cn = (Connection) cc.conexion();
-        try {
-
-            int fila = tblClientes.getSelectedRow();
-            String dao = (String) tblClientes.getValueAt(fila, 0);
-            String sql = "DELETE FROM clientes  where nombre=?, cantidad=?" + tblClientes.getValueAt(fila, 0);
-            java.sql.PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1, txtNombre.getText());
-            pst.setString(2, jspArticulos.getValue().toString());
+  int fila=tblClientes.getSelectedRow();
+   String dao=(String)tblClientes.getValueAt(fila,0);
+        try
+        {
+             if (tblClientes.getRowCount()!=0)
+{ 
+    java.sql.PreparedStatement pst = cn.prepareStatement(sql="DELETE from clientes where nombre='"+dao+"'");
+pst.executeUpdate();
+ 
+ JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE"); 
+   
+}
+else
+{
+   JOptionPane.showMessageDialog(null, "CAMPOS VACIOS" , "NO HAY REGISTROS QUE ELIMINAR", JOptionPane.ERROR_MESSAGE);
+    return;
+}
            
-
-            if (pst.executeUpdate(sql) >= 0) {
-                JOptionPane.showMessageDialog(this, "REGISTRO ELIMINADO");
-            } else {
-
-                JOptionPane.showMessageDialog(this, "NO SE HA PODIDO ELIMINA EL REGISTRO");
-
-            }
-
-        } catch (SQLException ex) {
+        }
+         catch (SQLException ex) 
+        {
             Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mostrarClientes();
+       mostrarClientes();
 
 
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -314,25 +321,28 @@ else
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         Conectar cc = new Conectar();
         Connection cn = (Connection) cc.conexion();
-        sql="UPDATE clientes set nombre=? cantidad=? where nombre=?" ;
-       try { 
-           
-      
+try
+{
+     if (tblClientes.equals(null) )
+{
+}
+  else
+{
+   JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+    //return;
+}
      
-     java.sql.PreparedStatement pst= cn.prepareStatement("UPDATE clientes set nombre=? cantidad=? where nombre=?");
-     pst.setString(1, txtNombre.getText());
-    pst.setString(2, jspArticulos.getValue().toString());
-    pst.setString(3, txtCantidad.getText());
-     pst.executeUpdate(sql);
-    
-   JOptionPane.showMessageDialog(this, "DATOS MODIFICADO");
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE clientes set nombre='"+txtNombre.getText()+"', cantidad='"+txtCantidad.getText()+"' where nombre='"+txtNombre.getText()+"'");
+pst.executeUpdate();
    
-  }
-    catch (SQLException ex) {
-    Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-    }
-
-        mostrarClientes();
+ JOptionPane.showMessageDialog(null, "DATOS MODIFICADOS CORRECTAMENTE"); 
+    
+}
+catch  (SQLException ex) 
+        {
+          Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);   
+        }
+    mostrarClientes(); 
 
     }//GEN-LAST:event_btnModificarActionPerformed
 

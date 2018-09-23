@@ -372,17 +372,17 @@ System.exit(0);        // TODO add your handling code here:
 }
 else
 {
-   JOptionPane.showMessageDialog(tablaJoyas, "REGISTROS VACIOS, FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "", JOptionPane.ERROR_MESSAGE);
-    return;
+   JOptionPane.showMessageDialog(tablaJoyas, "FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+    
 }
         java.sql.PreparedStatement pst= cn.prepareStatement(sql);
      pst.setString(1,cantidad);
     pst.setString(2,descripcion);
     pst.setString(3,codigo);
     pst.setString(4,precio);
-    pst.setString(5,"$"+total);
+    pst.setString(5,"$"+lblTotal);
      pst.executeUpdate();
-     JOptionPane.showMessageDialog(null, "REGISTRO GUARDADO");
+     JOptionPane.showMessageDialog(null, "REGISTROS GUARDADOS ");
     }
     catch (SQLException ex) 
     {
@@ -407,22 +407,22 @@ imprimir();
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
   Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
-  try { 
-      sql="UPDATE joyas set cantidad=?, descripcion=?, codigo=? precio=? where cantidad=?";
-      int fila=tablaJoyas.getSelectedRow();
-     String dao= (String)tablaJoyas.getValueAt(fila, 0);
-      java.sql.PreparedStatement pst= cn.prepareStatement(sql);
- pst.setString(1, txtCantidad.getText());
-    pst.setString(2, txtDescripcion.getText());
-    pst.setString(3, txtCodigo.getText());
-    pst.setString(4, txtPrecio.getText().toString());
-    //pst.setString(5, lblTotal.setText(total));
+ try
+{
+         if (tablaJoyas.equals(null) )
+{
+}
+  else
+{
+   JOptionPane.showMessageDialog(null, "NO SE PUEDEN MODIFICAR LOS CAMPOS SELECCIONADOS" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+    //return;
+}
+    java.sql.PreparedStatement pst = cn.prepareStatement(sql="UPDATE joyas set cantidad='"+txtCantidad.getText()+"', descripcion='"+txtDescripcion.getText()+"' codigo='"+txtCodigo.getText()+"', precio='"+txtPrecio.getText()+"',  where cantidad='"+txtCantidad.getText()+"'");
+pst.executeUpdate();
   
-     pst.executeUpdate(sql);
-    
-     JOptionPane.showMessageDialog(this, "DATOS MODIFICADO");
-   
-  }
+ JOptionPane.showMessageDialog(null, "DATOS MODIFICADOS CORRECTAMENTE"); 
+     resultado();
+}
     catch (SQLException ex) {
     Logger.getLogger(TablasJoyas.class.getName()).log(Level.SEVERE, null, ex);
     }
