@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,59 +21,70 @@ import javax.swing.table.DefaultTableModel;
  * @author FGG
  */
 public class RegistroClientes extends javax.swing.JFrame {
-private javax.swing.JButton next;
-private javax.swing.JButton salir;
-private javax.swing.JTextField nombre;
 
-  String n,sp,sql="";
+    private javax.swing.JButton next;
+    private javax.swing.JButton salir;
+    private javax.swing.JTextField nombre;
 
+    String n, sp, sql = "";
+    private Object acciones;
 
     /**
      * Creates new form RegistroClientes
      */
     public RegistroClientes() {
         initComponents();
-         setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
-         setLocationRelativeTo(null);
-         limpiar();
-         bloquear();
- mostrarClientes();
+        setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
+        setLocationRelativeTo(null);
+        limpiar();
+        bloquear();
+
+        mostrarClientes();
     }
 
-public void limpiar()
-{
-   txtNombre.setText("");
-}
-  public void bloquear()
-{
-   txtNombre.setEnabled(false);
-   jspArticulos.setEnabled(false);
-   btnSiguiente.setEnabled(false);
-  
-}
-public void desbloquear()
-{
-   txtNombre.setEnabled(true); 
-   jspArticulos.setEnabled(true);
-   btnSiguiente.setEnabled(true);
-  
-}
-private void  mostrarClientes()
-   {
-     DefaultTableModel model = new DefaultTableModel();               
+    public void limpiar() {
+        txtNombre.setText("");
+        txtCantidad.setText("");
+    }
+
+    public void bloquear() {
+        txtNombre.setEnabled(false);
+        txtCantidad.setEnabled(false);
+        jspArticulos.setEnabled(false);
+        btnSiguiente.setEnabled(false);
+        btnGuardar.setEnabled(false);
+        btnModificar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+
+    }
+
+    public void desbloquear() {
+        txtNombre.setEnabled(true);
+        txtCantidad.setEnabled(true);
+        jspArticulos.setEnabled(true);
+        btnSiguiente.setEnabled(true);
+        btnGuardar.setEnabled(true);
+        btnModificar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+
+    }
+
+    private void mostrarClientes() {
+        DefaultTableModel model = new DefaultTableModel();
         ResultSet rs = Conectar.getTabla("select * from clientes");
         model.setColumnIdentifiers(new Object[]{"nombre", "cantidad"});
         try {
             while (rs.next()) {
                 // añade los resultado a al modelo de tabla
                 model.addRow(new Object[]{rs.getString("nombre"), rs.getString("cantidad")});
-            }            
+            }
             // asigna el modelo a la tabla
-            tblClientes.setModel(model);            
+            tblClientes.setModel(model);
         } catch (SQLException e) {
             System.out.println(e);
-        }  
-   }
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,9 +95,9 @@ private void  mostrarClientes()
     private void initComponents() {
 
         lblPresentacion = new javax.swing.JLabel();
-        lblImg = new javax.swing.JLabel();
         btnSiguiente = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
+        lblImg = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
         lblCantidad = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
@@ -93,25 +106,28 @@ private void  mostrarClientes()
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClientes = new javax.swing.JTable();
         btnGuardar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        txtCantidad = new javax.swing.JTextField();
+        lblPresentacion1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 0, 204));
+        setForeground(new java.awt.Color(0, 0, 153));
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblPresentacion.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lblPresentacion.setText("AngelCatalogo");
-        getContentPane().add(lblPresentacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 120, -1));
+        getContentPane().add(lblPresentacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 11, 120, -1));
 
-        lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
-        getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 150));
-
-        btnSiguiente.setText("SIGUIENTE");
+        btnSiguiente.setText("IR A JOYAS ");
         btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSiguienteActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 300, -1, -1));
+        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(402, 298, -1, -1));
 
         btnSalir.setText("SALIR");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -119,7 +135,10 @@ private void  mostrarClientes()
                 btnSalirActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 300, -1, -1));
+        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(511, 298, -1, -1));
+
+        lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
+        getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 150));
 
         lblNombre.setText("NOMBRE:");
         getContentPane().add(lblNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, -1, 28));
@@ -141,7 +160,7 @@ private void  mostrarClientes()
                 btnNuevoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
+        getContentPane().add(btnNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 298, -1, -1));
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -151,9 +170,14 @@ private void  mostrarClientes()
                 "NOMBRE", "CANTIDAD"
             }
         ));
+        tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblClientes);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 280, 290));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(303, 46, 280, 234));
 
         btnGuardar.setText("GUARDAR");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -161,51 +185,156 @@ private void  mostrarClientes()
                 btnGuardarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, -1, -1));
+        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 298, -1, -1));
+
+        btnModificar.setText("MODIFICAR");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(194, 298, -1, -1));
+
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(303, 298, -1, -1));
+        getContentPane().add(txtCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 260, 60, -1));
+
+        lblPresentacion1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblPresentacion1.setText("CLIENTES");
+        getContentPane().add(lblPresentacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 11, 120, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+if (tblClientes.getRowCount() == 0 )
+{
+}
+else
+{
+   JOptionPane.showMessageDialog(tblClientes, "CAMPOS VACIOS, FAVOR DE INGRESAR SU NOMBRE Y CANTIDAD DE JOYAS" , "", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+        TablasJoyas tj = new TablasJoyas();
+        tj.setVisible(true);
+        this.show(false);
 
-TablasJoyas tj=new TablasJoyas();
-tj.setVisible(true);
-this.show(false);
 
- 
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-     desbloquear();
+        desbloquear();
+        txtCantidad.setEnabled(false);
         limpiar();
         txtNombre.requestFocus();
+
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
-txtNombre.transferFocus();       
+        txtNombre.transferFocus();
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-     Conectar cc=new Conectar();
- Connection cn= (Connection) cc.conexion();
-  n=txtNombre.getText();
-  sp=jspArticulos.getValue().toString();
-  sql="INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
-    try {
-        java.sql.PreparedStatement pst= cn.prepareStatement(sql);
-     pst.setString(1,n);
-    pst.setString(2, sp);
-     pst.executeUpdate();
-    }
+        Conectar cc = new Conectar();
+        Connection cn = (Connection) cc.conexion();
+        n = txtNombre.getText();
+        sp = jspArticulos.getValue().toString();
+
+        sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
+        try {
+           if (tblClientes.getRowCount() == 0 )
+{
+}
+else
+{
+   JOptionPane.showMessageDialog(tblClientes, "REGISTROS VACIOS, FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "", JOptionPane.ERROR_MESSAGE);
+    return;
+}
+            java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, n);
+            pst.setString(2, sp);
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "DATOS GUARDADOS");
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        mostrarClientes();
+
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void tblClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClientesMouseClicked
+        DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
+        txtNombre.setText(model.getValueAt(tblClientes.getSelectedRow(), 0) + "");
+        txtCantidad.setText(model.getValueAt(tblClientes.getSelectedRow(), 1) + "");
+        txtCantidad.setEnabled(true);
+        txtNombre.setEnabled(true);
+
+
+    }//GEN-LAST:event_tblClientesMouseClicked
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        Conectar cc = new Conectar();
+        Connection cn = (Connection) cc.conexion();
+        try {
+
+            int fila = tblClientes.getSelectedRow();
+            String dao = (String) tblClientes.getValueAt(fila, 0);
+            String sql = "DELETE FROM clientes  where nombre=?, cantidad=?" + tblClientes.getValueAt(fila, 0);
+            java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, txtNombre.getText());
+            pst.setString(2, jspArticulos.getValue().toString());
+           
+
+            if (pst.executeUpdate(sql) >= 0) {
+                JOptionPane.showMessageDialog(this, "REGISTRO ELIMINADO");
+            } else {
+
+                JOptionPane.showMessageDialog(this, "NO SE HA PODIDO ELIMINA EL REGISTRO");
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        mostrarClientes();
+
+
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        Conectar cc = new Conectar();
+        Connection cn = (Connection) cc.conexion();
+        sql="UPDATE clientes set nombre=? cantidad=? where nombre=?" ;
+       try { 
+           
+      
+     
+     java.sql.PreparedStatement pst= cn.prepareStatement("UPDATE clientes set nombre=? cantidad=? where nombre=?");
+     pst.setString(1, txtNombre.getText());
+    pst.setString(2, jspArticulos.getValue().toString());
+    pst.setString(3, txtCantidad.getText());
+     pst.executeUpdate(sql);
+    
+   JOptionPane.showMessageDialog(this, "DATOS MODIFICADO");
+   
+  }
     catch (SQLException ex) {
     Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
     }
-    mostrarClientes();// TODO add your handling code here:
-    }//GEN-LAST:event_btnGuardarActionPerformed
+
+        mostrarClientes();
+
+    }//GEN-LAST:event_btnModificarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,7 +372,9 @@ txtNombre.transferFocus();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnSiguiente;
@@ -253,7 +384,9 @@ txtNombre.transferFocus();
     private javax.swing.JLabel lblImg;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPresentacion;
+    private javax.swing.JLabel lblPresentacion1;
     private javax.swing.JTable tblClientes;
+    private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
