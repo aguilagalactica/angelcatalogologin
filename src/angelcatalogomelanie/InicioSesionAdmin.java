@@ -5,21 +5,23 @@
  */
 package angelcatalogomelanie;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author franky
  */
-public class IniciarSesion extends javax.swing.JFrame {
+public class InicioSesionAdmin extends javax.swing.JFrame {
 String Usuario;
 String Contraseña;
     /**
      * Creates new form LOGGIN
      */
-    public IniciarSesion() {
+    public InicioSesionAdmin() {
         initComponents();
     this.setLocationRelativeTo(null);
+     setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
     }
 
     /**
@@ -36,7 +38,7 @@ String Contraseña;
         jpfPASSWORD = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         btnENTRAR = new javax.swing.JButton();
-        btnSALIR = new javax.swing.JButton();
+        btnAtras = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -65,15 +67,20 @@ String Contraseña;
                 btnENTRARMouseClicked(evt);
             }
         });
-        getContentPane().add(btnENTRAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, -1, -1));
-
-        btnSALIR.setText("SALIR");
-        btnSALIR.addActionListener(new java.awt.event.ActionListener() {
+        btnENTRAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSALIRActionPerformed(evt);
+                btnENTRARActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSALIR, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 310, -1, -1));
+        getContentPane().add(btnENTRAR, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, -1, -1));
+
+        btnAtras.setText("ATRAS");
+        btnAtras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtrasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 310, -1, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/descarga.jpg"))); // NOI18N
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 330, 200));
@@ -85,21 +92,33 @@ String Contraseña;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnENTRARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnENTRARActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnENTRARActionPerformed
+
     private void btnENTRARMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnENTRARMouseClicked
         String Usuario = "pancho";
         String Contraseña = "8787";
- 
+
         String psw = new String(jpfPASSWORD.getPassword());
         if (txtUSUARIO.getText().equals(Usuario) && psw.equals(Contraseña)) 
         {
-        RegistroClientes  rc= new RegistroClientes();
-        rc.setVisible(true);
-        this.show(false);
-       rc.desbloquear();
-       
-       
+           RegistroClientesB rcb = new RegistroClientesB();
+         rcb.setVisible(true); 
+         this.show(false); 
         }
-       
+        /*if ((Usuario.isEmpty()) && (psw.isEmpty())) 
+        {
+            JOptionPane.showMessageDialog(null, "INGRESE SU NOMBRE DE USUARIO Y CONTRASEÑA");
+        }**/
+        else 
+        {
+            
+            JOptionPane.showMessageDialog(this, "USUARIO Y/O CONTRASEÑA INCORRECTA");
+       InicioSesion is= new InicioSesion();
+is.setVisible(true);
+this.show(false); 
+        }
         
 
     }//GEN-LAST:event_btnENTRARMouseClicked
@@ -108,9 +127,11 @@ String Contraseña;
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUSUARIOActionPerformed
 
-    private void btnSALIRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSALIRActionPerformed
-System.exit(0);        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSALIRActionPerformed
+    private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
+    InicioSesion is= new InicioSesion();
+is.setVisible(true);
+this.show(false);   
+    }//GEN-LAST:event_btnAtrasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -129,18 +150,14 @@ System.exit(0);        // TODO add your handling code here:
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(IniciarSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesionAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(IniciarSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesionAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(IniciarSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesionAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(IniciarSesion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InicioSesionAdmin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -149,14 +166,14 @@ System.exit(0);        // TODO add your handling code here:
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new IniciarSesion().setVisible(true);
+                new InicioSesionAdmin().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnENTRAR;
-    private javax.swing.JButton btnSALIR;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -11,6 +11,7 @@ import javax.swing.*;
 public class Conectar 
 {
     Connection conect = null;
+    String Usu, Psd;
  
     public Connection conexion()
         {
@@ -50,6 +51,22 @@ public class Conectar
         catch(Exception e){ System.out.print(e.toString());}
         return datos;
     } 
+
+    public String getUsu() {
+        return Usu;
+    }
+
+    public void setUsu(String Usu) {
+        this.Usu = Usu;
+    }
+
+    public String getPsd() {
+        return Psd;
+    }
+
+    public void setPsd(String Psd) {
+        this.Psd = Psd;
+    }
      
     
 }

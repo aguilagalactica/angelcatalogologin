@@ -23,7 +23,7 @@ import javax.swing.table.TableRowSorter;
  *
  * @author FGG
  */
-public class RegistroClientes extends javax.swing.JFrame {
+public class RegistroClientesB extends javax.swing.JFrame {
 
     private javax.swing.JButton next;
     private javax.swing.JButton salir;
@@ -37,10 +37,10 @@ int id, num, ctb;
     /**
      * Creates new form RegistroClientes
      */
-    public RegistroClientes() 
+    public RegistroClientesB() 
     {
         initComponents();
-         this.getContentPane().setBackground(Color.blue);
+         this.getContentPane().setBackground(Color.magenta);
         setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
         setLocationRelativeTo(null);
        conectarBDclientes();
@@ -79,39 +79,6 @@ public void conectarBDclientes()
      cn=cc.conexion();
      }
 
-public void GuardarDatos()
-{     
-    
-        try {
-             n = txtNombre.getText();
-       num= Integer.parseInt(txtCantidad.getText());
-
-        sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
-           if (txtNombre.getText().isEmpty()||txtCantidad.getText().isEmpty())
-{
-    JOptionPane.showMessageDialog(null, " FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
- 
-}
-else
-{
-    Conectar cc = new Conectar();
-     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
-     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setString(1,n);
-            pst.setInt(2,num);
-            
-           
-            pst.executeUpdate();
-            mostrarClientes();
-            JOptionPane.showMessageDialog(null, "DATOS GUARDADOS CORRECTAMENTE");
-            
-}     
-        } 
-        catch (SQLException ex) 
-        {
-            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
 public void SiguienteTabla()
 { 
   
@@ -122,26 +89,24 @@ public void SiguienteTabla()
 }
 else
      {
-         TablasJoyas tj = new TablasJoyas();
-        tj.setVisible(true);
+         TablasJoyasB tjb = new TablasJoyasB();
+        tjb.setVisible(true);
         this.show(false);
      }
      
 }
 public void NuevosDatos()
-{
-     btnGuardar.setEnabled(true);       
-        txtCantidad.setEnabled(true);
+{        txtCantidad.setEnabled(true);
         limpiar();
         txtCantidad.requestFocus();
 }
 public void MostrarDatosTablas()
 {
-   //DefaultTableModel model = (DefaultTableModel) tblClientes.getModel();
+   txtCantidad.setEnabled(true); 
        lblId.setText(model.getValueAt(tblClientes.getSelectedRow(), 0) + "");
        txtCantidad.setText(model.getValueAt(tblClientes.getSelectedRow(), 1) + "");
        
-        txtCantidad.setEnabled(true); 
+       
 }
 
 
@@ -164,15 +129,13 @@ public void MostrarClientesSeleccionados()
 
         lblPresentacion = new javax.swing.JLabel();
         btnSiguiente = new javax.swing.JButton();
-        btnSalir = new javax.swing.JButton();
+        btnAtrasTJB = new javax.swing.JButton();
         lblImg = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
         lblCantidad = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
-        btnNuevo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClientes = new javax.swing.JTable();
-        btnGuardar = new javax.swing.JButton();
         lblPresentacion1 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
@@ -181,6 +144,8 @@ public void MostrarClientesSeleccionados()
         btnDesactivar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 204));
@@ -198,15 +163,15 @@ public void MostrarClientesSeleccionados()
                 btnSiguienteActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 300, -1, -1));
+        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, -1, -1));
 
-        btnSalir.setText("ATRAS");
-        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+        btnAtrasTJB.setText("ATRAS");
+        btnAtrasTJB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirActionPerformed(evt);
+                btnAtrasTJBActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 300, -1, -1));
+        getContentPane().add(btnAtrasTJB, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, -1, -1));
 
         lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
         getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 120));
@@ -223,14 +188,6 @@ public void MostrarClientesSeleccionados()
             }
         });
         getContentPane().add(txtCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 260, 70, -1));
-
-        btnNuevo.setText("NUEVO");
-        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevoActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnNuevo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 298, -1, -1));
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -260,14 +217,6 @@ public void MostrarClientesSeleccionados()
         }
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(303, 46, 460, 234));
-
-        btnGuardar.setText("GUARDAR");
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 298, -1, -1));
 
         lblPresentacion1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lblPresentacion1.setText("CLIENTES");
@@ -310,32 +259,28 @@ public void MostrarClientesSeleccionados()
         });
         getContentPane().add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 170, -1));
 
+        jButton1.setText("MODIFICAR");
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
+
+        jButton2.setText("ELIMINAR");
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 300, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-       InicioSesion is = new InicioSesion();
-       is.setVisible(true);
-       this.show(false);
-    }//GEN-LAST:event_btnSalirActionPerformed
+    private void btnAtrasTJBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasTJBActionPerformed
+      InicioSesionAdmin isa = new InicioSesionAdmin();
+      isa.setVisible(true);
+      this.show(false);
+    }//GEN-LAST:event_btnAtrasTJBActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
        SiguienteTabla();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
-    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-       NuevosDatos();
-       
-    }//GEN-LAST:event_btnNuevoActionPerformed
-
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         txtCantidad.transferFocus();
     }//GEN-LAST:event_txtCantidadActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-       GuardarDatos();
-      
-    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
    MostrarClientesSeleccionados();       // TODO add your handling code here:
@@ -395,31 +340,32 @@ txtBuscar.setEnabled(false);        // TODO add your handling code here:
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RegistroClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegistroClientesB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RegistroClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegistroClientesB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RegistroClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegistroClientesB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegistroClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegistroClientesB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegistroClientes().setVisible(true);
+                new RegistroClientesB().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtrasTJB;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnDesactivar;
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnNuevo;
-    private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnSiguiente;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
