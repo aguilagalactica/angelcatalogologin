@@ -7,6 +7,8 @@ package angelcatalogomelanie;
 
 import com.mysql.jdbc.*;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -28,7 +30,8 @@ public class RegistroClientesB extends javax.swing.JFrame {
     private javax.swing.JButton next;
     private javax.swing.JButton salir;
     private javax.swing.JTextField nombre;
-
+ private TableRowSorter TrsFiltroCB;
+ 
     String n, sp, sql = "",filtro;
    DefaultTableModel model;
    ResultSet rs;
@@ -45,7 +48,7 @@ int id, num, ctb;
         setLocationRelativeTo(null);
        conectarBDclientes();
         limpiar();
-        txtBuscar.setEnabled(false);
+       
         mostrarClientes();
     }
 public void limpiar() 
@@ -108,15 +111,49 @@ public void MostrarDatosTablas()
        
        
 }
-
-
-
 public void MostrarClientesSeleccionados()
 {
-    txtBuscar.setEnabled(true);
+    txtBuscarB.setEnabled(true);
       
 }
+public void GuardarDatos()
+{     
+    
+        try {
+             n = txtNombre.getText();
+       num= Integer.parseInt(txtCantidad.getText());
 
+        sql = "INSERT INTO clientes(nombre,cantidad) VALUES (?,?)";
+           if (txtNombre.getText().isEmpty()||txtCantidad.getText().isEmpty())
+{
+    JOptionPane.showMessageDialog(null, " FAVOR DE INTRODUCIR DATOS PARA GUARDAR" , "REGISTROS VACIOS", JOptionPane.ERROR_MESSAGE);
+ 
+}
+else
+{
+    Conectar cc = new Conectar();
+     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1,n);
+            pst.setInt(2,num);
+            
+           
+            pst.executeUpdate();
+            mostrarClientes();
+            JOptionPane.showMessageDialog(null, "DATOS GUARDADOS CORRECTAMENTE");
+            
+}     
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(RegistroClientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
+public void filtroclientesB()
+{
+    int i=1;
+    TrsFiltroCB.setRowFilter(RowFilter.regexFilter(txtBuscarB.getText(),i));
+}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -137,15 +174,14 @@ public void MostrarClientesSeleccionados()
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClientes = new javax.swing.JTable();
         lblPresentacion1 = new javax.swing.JLabel();
-        txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        txtBuscarB = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         lblId = new javax.swing.JLabel();
-        btnDesactivar = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        btnGuardarB = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 204));
@@ -163,7 +199,7 @@ public void MostrarClientesSeleccionados()
                 btnSiguienteActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, -1, -1));
+        getContentPane().add(btnSiguiente, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, -1, -1));
 
         btnAtrasTJB.setText("ATRAS");
         btnAtrasTJB.addActionListener(new java.awt.event.ActionListener() {
@@ -171,7 +207,7 @@ public void MostrarClientesSeleccionados()
                 btnAtrasTJBActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAtrasTJB, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 300, -1, -1));
+        getContentPane().add(btnAtrasTJB, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 300, -1, -1));
 
         lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
         getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 120));
@@ -222,35 +258,16 @@ public void MostrarClientesSeleccionados()
         lblPresentacion1.setText("CLIENTES");
         getContentPane().add(lblPresentacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 11, 120, -1));
 
-        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarB.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtBuscarKeyTyped(evt);
+                txtBuscarBKeyTyped(evt);
             }
         });
-        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 340, 270, -1));
-
-        btnBuscar.setText("BUSCAR");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
+        getContentPane().add(txtBuscarB, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 300, 300, -1));
 
         jLabel1.setText("id:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
         getContentPane().add(lblId, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 60, 20));
-
-        btnDesactivar.setText("DESACTIVAR");
-        btnDesactivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDesactivarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnDesactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 340, -1, -1));
-
-        jLabel2.setText("<-------");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 340, -1, -1));
 
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -260,10 +277,22 @@ public void MostrarClientesSeleccionados()
         getContentPane().add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 170, -1));
 
         jButton1.setText("MODIFICAR");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 300, -1, -1));
 
         jButton2.setText("ELIMINAR");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 300, -1, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, -1, -1));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("BUSCAR:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, -1, -1));
+
+        btnGuardarB.setText("GUARDAR");
+        btnGuardarB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarBActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnGuardarB, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -282,46 +311,29 @@ public void MostrarClientesSeleccionados()
         txtCantidad.transferFocus();
     }//GEN-LAST:event_txtCantidadActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-   MostrarClientesSeleccionados();       // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    private void txtBuscarBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarBKeyTyped
+txtBuscarB.addKeyListener(new KeyAdapter() 
+{
+    public void keyReleased(final KeyEvent ke)
+    {
+        String cadena = (txtBuscarB.getText());
+    txtBuscarB.setText(cadena);
+    filtroclientesB();
+    }
+});
 
-    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
-try {
-           
-            filtro = txtBuscar.getText();
-            if (!filtro.equals("")) {
-                filtro = "SELECT * FROM clientes  WHERE nombre like '%" + filtro  + "%'";
-
-               //rs = buscarCriterio(filtro); //Se ejecuta la consulta
-                model.setNumRows(0);  //Resetear tabla a 0 filas
-                while (rs.next()) { //Mientras haya datos en la tabla temporal:
-                    Object fila[] = {"", "", ""}; //Se genera un objeto para agregar fila
-                    model.addRow(fila); //Se agrega la fila a la tabla
-                    tblClientes.setValueAt(rs.getInt(1), ctb, 0); //Clave de Enfermera
-                    tblClientes.setValueAt(rs.getString(2), ctb, 1); //Nombre enfermera
-                    tblClientes.setValueAt(rs.getString(3), ctb, 2); //Apellido enfermera
-                    ctb++; //Servirá exclusivamente para increentar la fila de la tabla 
-                }                
-            }
-            else
-                 model.setNumRows(0);
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error \n" + ex);
-        }
-  
-
-         // TODO add your handling code here:
-    }//GEN-LAST:event_txtBuscarKeyTyped
-
-    private void btnDesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesactivarActionPerformed
-txtBuscar.setEnabled(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDesactivarActionPerformed
+TrsFiltroCB = new TableRowSorter(tblClientes.getModel());
+tblClientes.setRowSorter(TrsFiltroCB);
+    }//GEN-LAST:event_txtBuscarBKeyTyped
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void btnGuardarBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarBActionPerformed
+        GuardarDatos();
+
+    }//GEN-LAST:event_btnGuardarBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -361,8 +373,7 @@ txtBuscar.setEnabled(false);        // TODO add your handling code here:
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtrasTJB;
-    private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnDesactivar;
+    private javax.swing.JButton btnGuardarB;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -376,7 +387,7 @@ txtBuscar.setEnabled(false);        // TODO add your handling code here:
     private javax.swing.JLabel lblPresentacion;
     private javax.swing.JLabel lblPresentacion1;
     private javax.swing.JTable tblClientes;
-    private javax.swing.JTextField txtBuscar;
+    private javax.swing.JTextField txtBuscarB;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables

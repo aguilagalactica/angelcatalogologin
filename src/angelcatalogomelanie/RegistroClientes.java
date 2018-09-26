@@ -7,6 +7,8 @@ package angelcatalogomelanie;
 
 import com.mysql.jdbc.*;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -28,8 +30,9 @@ public class RegistroClientes extends javax.swing.JFrame {
     private javax.swing.JButton next;
     private javax.swing.JButton salir;
     private javax.swing.JTextField nombre;
+    private TableRowSorter TrsFiltroC;
 
-    String n, sp, sql = "",filtro;
+    String n, sp, sql = "";
    DefaultTableModel model;
    ResultSet rs;
     private Object acciones;
@@ -45,7 +48,6 @@ int id, num, ctb;
         setLocationRelativeTo(null);
        conectarBDclientes();
         limpiar();
-        txtBuscar.setEnabled(false);
         mostrarClientes();
     }
 public void limpiar() 
@@ -134,6 +136,7 @@ public void NuevosDatos()
         txtCantidad.setEnabled(true);
         limpiar();
         txtCantidad.requestFocus();
+       
 }
 public void MostrarDatosTablas()
 {
@@ -152,6 +155,11 @@ public void MostrarClientesSeleccionados()
       
 }
 
+public void filtroclientes()
+{
+    int i=1;
+    TrsFiltroC.setRowFilter(RowFilter.regexFilter(txtBuscar.getText(),i));
+}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -175,12 +183,10 @@ public void MostrarClientesSeleccionados()
         btnGuardar = new javax.swing.JButton();
         lblPresentacion1 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         lblId = new javax.swing.JLabel();
-        btnDesactivar = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 204));
@@ -206,7 +212,7 @@ public void MostrarClientesSeleccionados()
                 btnSalirActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 300, -1, -1));
+        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 300, -1, -1));
 
         lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/joyas.jpg"))); // NOI18N
         getContentPane().add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 260, 120));
@@ -278,30 +284,11 @@ public void MostrarClientesSeleccionados()
                 txtBuscarKeyTyped(evt);
             }
         });
-        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 340, 270, -1));
-
-        btnBuscar.setText("BUSCAR");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
+        getContentPane().add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 290, 290, -1));
 
         jLabel1.setText("id:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
         getContentPane().add(lblId, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 60, 20));
-
-        btnDesactivar.setText("DESACTIVAR");
-        btnDesactivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDesactivarActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnDesactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 340, -1, -1));
-
-        jLabel2.setText("<-------");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 340, -1, -1));
 
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -309,6 +296,10 @@ public void MostrarClientesSeleccionados()
             }
         });
         getContentPane().add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 170, -1));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("BUSCAR:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 290, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -337,42 +328,21 @@ public void MostrarClientesSeleccionados()
       
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-   MostrarClientesSeleccionados();       // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
-try {
-           
-            filtro = txtBuscar.getText();
-            if (!filtro.equals("")) {
-                filtro = "SELECT * FROM clientes  WHERE nombre like '%" + filtro  + "%'";
+txtBuscar.addKeyListener(new KeyAdapter() 
+{
+    public void keyReleased(final KeyEvent ke)
+    {
+        String cadena = (txtBuscar.getText());
+    txtBuscar.setText(cadena);
+    filtroclientes();
+    }
+});
 
-               //rs = buscarCriterio(filtro); //Se ejecuta la consulta
-                model.setNumRows(0);  //Resetear tabla a 0 filas
-                while (rs.next()) { //Mientras haya datos en la tabla temporal:
-                    Object fila[] = {"", "", ""}; //Se genera un objeto para agregar fila
-                    model.addRow(fila); //Se agrega la fila a la tabla
-                    tblClientes.setValueAt(rs.getInt(1), ctb, 0); //Clave de Enfermera
-                    tblClientes.setValueAt(rs.getString(2), ctb, 1); //Nombre enfermera
-                    tblClientes.setValueAt(rs.getString(3), ctb, 2); //Apellido enfermera
-                    ctb++; //Servirá exclusivamente para increentar la fila de la tabla 
-                }                
-            }
-            else
-                 model.setNumRows(0);
+TrsFiltroC = new TableRowSorter(tblClientes.getModel());
+tblClientes.setRowSorter(TrsFiltroC);
 
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error \n" + ex);
-        }
-  
-
-         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarKeyTyped
-
-    private void btnDesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesactivarActionPerformed
-txtBuscar.setEnabled(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDesactivarActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
@@ -414,8 +384,6 @@ txtBuscar.setEnabled(false);        // TODO add your handling code here:
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnDesactivar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;

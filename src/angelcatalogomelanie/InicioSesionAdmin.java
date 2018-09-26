@@ -5,6 +5,11 @@
  */
 package angelcatalogomelanie;
 
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -24,6 +29,47 @@ String Contraseña;
      setIconImage(new ImageIcon(getClass().getResource("/img/42349585.jpg")).getImage());
     }
 
+    void acceder(String usuario, String pass)
+    {
+        String cap="";
+       String sql="SELECT * FROM usuarios WHERE nombreusujoyas='"+usuario+"' && contrausujoyas='"+pass+"'";
+        try {
+            Conectar cc = new Conectar();
+     java.sql.Connection cn = (java.sql.Connection) cc.conexion();
+     java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery(sql);
+            while(rs.next())
+            {
+                cap=rs.getString("tipousuario");
+            }
+            if(cap.equals("admin"))
+            {
+                  
+                    JOptionPane.showMessageDialog(null, "BIENVENIDO");
+                      RegistroClientesB rcb = new RegistroClientesB();
+                    rcb.setVisible(true); 
+                    this.setVisible(false);
+            }
+            if ((txtUSUARIO.getText().isEmpty()) && (txtPASSWORD.getText().isEmpty())) 
+        {
+            JOptionPane.showMessageDialog(null, "INGRESE SU NOMBRE DE USUARIO Y CONTRASEÑA");
+            InicioSesion is= new InicioSesion();
+            is.setVisible(true);
+            this.show(false); 
+        }
+            if((!cap.equals("tipousuario")))
+            {
+                JOptionPane.showMessageDialog(null, "USTED NO ES ADMIN, FAVOR DE REGRESAR ");
+                InicioSesion is= new InicioSesion();
+                is.setVisible(true);
+                this.show(false); 
+         
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InicioSesionAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,7 +81,7 @@ String Contraseña;
 
         jLabel2 = new javax.swing.JLabel();
         txtUSUARIO = new javax.swing.JTextField();
-        jpfPASSWORD = new javax.swing.JPasswordField();
+        txtPASSWORD = new javax.swing.JPasswordField();
         jLabel1 = new javax.swing.JLabel();
         btnENTRAR = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
@@ -56,7 +102,7 @@ String Contraseña;
             }
         });
         getContentPane().add(txtUSUARIO, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 220, 182, -1));
-        getContentPane().add(jpfPASSWORD, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 180, -1));
+        getContentPane().add(txtPASSWORD, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 180, -1));
 
         jLabel1.setText("USUARIO");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
@@ -97,30 +143,11 @@ String Contraseña;
     }//GEN-LAST:event_btnENTRARActionPerformed
 
     private void btnENTRARMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnENTRARMouseClicked
-        String Usuario = "pancho";
-        String Contraseña = "8787";
-
-        String psw = new String(jpfPASSWORD.getPassword());
-        if (txtUSUARIO.getText().equals(Usuario) && psw.equals(Contraseña)) 
-        {
-           RegistroClientesB rcb = new RegistroClientesB();
-         rcb.setVisible(true); 
-         this.show(false); 
-        }
-        /*if ((Usuario.isEmpty()) && (psw.isEmpty())) 
-        {
-            JOptionPane.showMessageDialog(null, "INGRESE SU NOMBRE DE USUARIO Y CONTRASEÑA");
-        }**/
-        else 
-        {
-            
-            JOptionPane.showMessageDialog(this, "USUARIO Y/O CONTRASEÑA INCORRECTA");
-       InicioSesion is= new InicioSesion();
-is.setVisible(true);
-this.show(false); 
-        }
         
-
+        
+         String usu = txtUSUARIO.getText();
+    String pas = new String(txtPASSWORD.getPassword());
+        acceder(Usuario, pas);
     }//GEN-LAST:event_btnENTRARMouseClicked
 
     private void txtUSUARIOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUSUARIOActionPerformed
@@ -178,7 +205,7 @@ this.show(false);
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPasswordField jpfPASSWORD;
+    private javax.swing.JPasswordField txtPASSWORD;
     private javax.swing.JTextField txtUSUARIO;
     // End of variables declaration//GEN-END:variables
 }

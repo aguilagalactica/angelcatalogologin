@@ -9,6 +9,8 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +24,9 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -34,6 +38,7 @@ ResultSetMetaData rsMt;
 float n1,n2,n3,n4;
 String cantidad,descripcion,codigo,precio,total,sql="";
  protected Statement st = null;
+   private TableRowSorter TrsFiltroJB;
 
     /**
      * Creates new form TablasJoyas
@@ -65,11 +70,11 @@ String cantidad,descripcion,codigo,precio,total,sql="";
    {
      DefaultTableModel model = new DefaultTableModel();               
         ResultSet rs = Conectar.getTabla("select * from joyas");
-        model.setColumnIdentifiers(new Object[]{"idjoyas","cantidad", "descripcion","codigo","precio","total","idclientes"});
+        model.setColumnIdentifiers(new Object[]{"idjoyas","cantidad", "descripcion","codigo","precio","total"});
         try {
             while (rs.next()) {
                 // añade los resultado a al modelo de tabla
-                model.addRow(new Object[]{rs.getString("idjoyas"),rs.getString("cantidad"), rs.getString("descripcion"),rs.getString("codigo"),rs.getString("precio"),rs.getString("total"),rs.getString("idclientes")});
+                model.addRow(new Object[]{rs.getString("idjoyas"),rs.getString("cantidad"), rs.getString("descripcion"),rs.getString("codigo"),rs.getString("precio"),rs.getString("total")});
             }            
             // asigna el modelo a la tabla
             tablaJoyas.setModel(model);            
@@ -99,7 +104,7 @@ String cantidad,descripcion,codigo,precio,total,sql="";
    txtCodigo.setEnabled(false);
    txtDescripcion.setEnabled(false);
   txtPrecio.setEnabled(false);
-  btnRegistrar.setEnabled(false);
+  btnRegistrarB.setEnabled(false);
   
 }
 public void desbloquearjoyas()
@@ -108,10 +113,14 @@ public void desbloquearjoyas()
    txtCodigo.setEnabled(true);
    txtDescripcion.setEnabled(true);
   txtPrecio.setEnabled(true);
-   btnRegistrar.setEnabled(true);
+   btnRegistrarB.setEnabled(true);
  
 }
-
+public void filtroJoyasB()
+{
+    int i=3;
+    TrsFiltroJB.setRowFilter(RowFilter.regexFilter(txtBuscarJB.getText(),i));
+}
  
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,7 +131,7 @@ public void desbloquearjoyas()
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnRegistrar = new javax.swing.JButton();
+        btnRegistrarB = new javax.swing.JButton();
         btnAtras = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaJoyas = new javax.swing.JTable();
@@ -139,13 +148,17 @@ public void desbloquearjoyas()
         btnNuevo = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscarJB = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setUndecorated(true);
 
-        btnRegistrar.setText("REGISTRAR");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnRegistrarB.setText("GUARDAR");
+        btnRegistrarB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegistrarActionPerformed(evt);
+                btnRegistrarBActionPerformed(evt);
             }
         });
 
@@ -161,11 +174,11 @@ public void desbloquearjoyas()
 
             },
             new String [] {
-                "cantidad", "descripcion", "codigo", "precio", "total", "idclientes"
+                "idjoyas", "cantidad", "descripcion", "codigo", "precio", "total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false
+                false, true, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -233,6 +246,19 @@ public void desbloquearjoyas()
         jLabel7.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
         jLabel7.setText("TABLA DE JOYAS");
 
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel8.setText("BUSCAR:");
+
+        txtBuscarJB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarJBKeyTyped(evt);
+            }
+        });
+
+        jButton1.setText("MODIFICAR");
+
+        jButton2.setText("ELIMINAR");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -240,43 +266,53 @@ public void desbloquearjoyas()
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAtras)
-                                .addGap(27, 27, 27)
-                                .addComponent(btnNuevo)
+                                .addComponent(jLabel8)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnRegistrar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jLabel3)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jLabel5)
-                                                .addComponent(jLabel4)))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                                            .addComponent(txtCodigo)
-                                            .addComponent(txtCantidad)
-                                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7)
-                                .addGap(31, 31, 31)
-                                .addComponent(jLabel6)))
-                        .addContainerGap(83, Short.MAX_VALUE))))
+                                .addComponent(txtBuscarJB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnAtras)
+                                    .addGap(27, 27, 27)
+                                    .addComponent(btnNuevo)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btnRegistrarB)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton1)
+                                    .addGap(19, 19, 19)
+                                    .addComponent(jButton2))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel2)
+                                                .addComponent(jLabel1)
+                                                .addComponent(jLabel3)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jLabel5)
+                                                    .addComponent(jLabel4)))
+                                            .addGap(18, 18, 18)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                                                .addComponent(txtCodigo)
+                                                .addComponent(txtCantidad)
+                                                .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel7)
+                                    .addGap(31, 31, 31)
+                                    .addComponent(jLabel6))))
+                        .addGap(0, 99, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -302,21 +338,29 @@ public void desbloquearjoyas()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)))
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAtras)
-                    .addComponent(btnRegistrar)
-                    .addComponent(btnNuevo))
+                    .addComponent(txtBuscarJB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAtras)
+                        .addComponent(btnRegistrarB)
+                        .addComponent(btnNuevo))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton1)
+                        .addComponent(jButton2)))
                 .addGap(25, 25, 25))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+    private void btnRegistrarBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarBActionPerformed
   ////////////////////////////////CONEXION DIRECTA A MYSQL
         Conectar cc=new Conectar();
  Connection cn= (Connection) cc.conexion();
@@ -357,7 +401,7 @@ else
   /////////////////////////////////////////TERMINA LA SENTENCIA SQL 
   ////////////////////////////////////////METODO PARA VISUALIZAR LA TABLA DE JOYAS DESPUES DE ACTUALIZAR
     mostrarJoyas();
-    }//GEN-LAST:event_btnRegistrarActionPerformed
+    }//GEN-LAST:event_btnRegistrarBActionPerformed
 
     private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
 
@@ -398,6 +442,21 @@ desbloquearjoyas();
         txtCantidad.requestFocus();        // TODO add your handling code here:
     }//GEN-LAST:event_btnNuevoActionPerformed
 
+    private void txtBuscarJBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarJBKeyTyped
+        txtBuscarJB.addKeyListener(new KeyAdapter()
+            {
+                public void keyReleased(final KeyEvent ke)
+                {
+                    String cadena = (txtBuscarJB.getText());
+                    txtBuscarJB.setText(cadena);
+                    filtroJoyasB();
+                }
+            });
+
+            TrsFiltroJB = new TableRowSorter(tablaJoyas.getModel());
+            tablaJoyas.setRowSorter(TrsFiltroJB);
+    }//GEN-LAST:event_txtBuscarJBKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -437,7 +496,9 @@ desbloquearjoyas();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnNuevo;
-    private javax.swing.JButton btnRegistrar;
+    private javax.swing.JButton btnRegistrarB;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -445,9 +506,11 @@ desbloquearjoyas();
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tablaJoyas;
+    private javax.swing.JTextField txtBuscarJB;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescripcion;
